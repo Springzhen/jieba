@@ -40,10 +40,7 @@ re_eng = re.compile('[a-zA-Z0-9]', re.U)
 
 # \u4E00-\u9FD5a-zA-Z0-9+#&\._ : All non-space characters. Will be handled with re_han
 # \r\n|\s : whitespace characters. Will not be handled.
-# re_han_default = re.compile("([\u4E00-\u9FD5a-zA-Z0-9+#&\._%]+)", re.U)
-# Adding "-" symbol in re_han_default
-re_han_default = re.compile("([\u4E00-\u9FD5a-zA-Z0-9+#&\._%\-]+)", re.U)
-
+re_han_default = re.compile("([\u4E00-\u9FD5a-zA-Z0-9+#&\._%]+)", re.U)
 re_skip_default = re.compile("(\r\n|\s)", re.U)
 re_han_cut_all = re.compile("([\u4E00-\u9FD5]+)", re.U)
 re_skip_cut_all = re.compile("[^a-zA-Z0-9+#\n]", re.U)
@@ -64,9 +61,11 @@ class Tokenizer(object):
         self.total = 0
         self.user_word_tag_tab = {}
         self.initialized = False
-        self.tmp_dir = None
+        self.tmp_dir = './'
         self.cache_file = None
-
+        
+        
+        
     def __repr__(self):
         return '<Tokenizer dictionary=%r>' % self.dictionary
 
@@ -124,8 +123,11 @@ class Tokenizer(object):
                     abs_path.encode('utf-8', 'replace')).hexdigest()
             cache_file = os.path.join(
                 self.tmp_dir or tempfile.gettempdir(), cache_file)
+            
+            #print('tempfile.gettempdir()', tempfile.gettempdir())
             # prevent absolute path in self.cache_file
             tmpdir = os.path.dirname(cache_file)
+            
 
             load_from_cache_fail = True
             if os.path.isfile(cache_file) and (abs_path == DEFAULT_DICT or
@@ -164,7 +166,7 @@ class Tokenizer(object):
             self.initialized = True
             default_logger.debug(
                 "Loading model cost %.3f seconds." % (time.time() - t1))
-            default_logger.debug("Prefix dict has been built successfully.")
+            default_logger.debug("Prefix dict has been built succesfully.")
 
     def check_initialized(self):
         if not self.initialized:
@@ -275,7 +277,7 @@ class Tokenizer(object):
     def cut(self, sentence, cut_all=False, HMM=True):
         '''
         The main function that segments an entire sentence that contains
-        Chinese characters into separated words.
+        Chinese characters into seperated words.
 
         Parameter:
             - sentence: The str(unicode) to be segmented.
